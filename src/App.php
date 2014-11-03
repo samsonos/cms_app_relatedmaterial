@@ -84,13 +84,15 @@ class App extends \samson\cms\App
 
         $materials = null;
 
-        if (dbQuery('\samson\cms\Material')->parent_id($material_id)->exec($materials)) {
+        if (dbQuery('\samson\cms\CMSMaterial')->parent_id($material_id)->exec($materials)) {
             foreach ($materials as $material) {
 
             }
         }
 
-        $parent = dbQuery('material')->id($material_id)->first();
+        $parent = dbQuery('\samson\cms\CMSMaterial')->id($material_id)->first();
+
+        $table = new RelatedTable($parent);
 
         //$this->cloneParent($parent);
 
