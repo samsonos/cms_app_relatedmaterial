@@ -1,8 +1,11 @@
-<table class="__samsoncms_table field_table">
+<table class="__samsoncms_table related_material_table">
     <thead>
     <tr>
-        <th class="name"><?php t('Название')?></th>
-        <th class="value"><?php t('Значение')?></th>
+        <th class="name"><?php t('Url')?></th>
+        <?php v('thView') ?>
+        <th>
+            <?php t('Удаление') ?>
+        </th>
     </tr>
     </thead>
     <tbody><?php v('rows'); ?></tbody>

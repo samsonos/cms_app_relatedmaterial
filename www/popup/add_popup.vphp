@@ -1,0 +1,13 @@
+<div class="add_related_popup">
+    <span class="close-button">X</span>
+
+    <div>
+        <form action="<?php url_base('related_material/add', 'related_material/table', 'parentID') ?>" method="post" class="add_related_form">
+            <?php t('Url:') ?>
+            <br>
+            <input type="text" required name="Url" placeholder="<?php t('Url-адрес') ?>">
+            <input type="hidden" name="parent_id" value="<?php v('parentID') ?>">
+            <input type="submit" value="<?php t('Создать') ?>">
+        </form>
+    </div>
+</div>

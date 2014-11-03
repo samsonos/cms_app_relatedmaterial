@@ -27,6 +27,9 @@ class RelatedTable extends \samson\cms\table\Table
     /** Fields locale */
     private $locale;
 
+    /** @var string  */
+    protected $renderModule = 'related_material';
+
     /**
      * @var array $structures Collection of structures with related fields
      */
@@ -34,17 +37,20 @@ class RelatedTable extends \samson\cms\table\Table
 
     public function __construct(\samson\cms\CMSMaterial & $parent, $locale = 'ru')
     {
+        // Retrieve pointer to current module for rendering
+        $this->renderModule = & s()->module($this->renderModule);
+
         $this->locale = $locale;
 
         // Save pointer to CMSMaterial
         $this->parent = & $parent;
 
-        $fields_array = null;
+        $fields_array = array();
 
         foreach ($parent->cmsnavs() as $structure) {
             if ($structure->type == 1) {
                 $this->structures[$structure->id] = $structure;
-                $fields_array = array_merge($this->fields, $structure->fields());
+                $fields_array = array_merge($fields_array, $structure->fields());
             }
         }
 
@@ -55,8 +61,6 @@ class RelatedTable extends \samson\cms\table\Table
         unset($fields_array);
         $field_keys = array_keys($this->fields);
 
-        trace($this->fields, true);
-
         // Prepare db query for all related material fields to structures
         $this->query = dbQuery( 'samson\cms\CMSMaterial')
             ->join('samson\cms\CMSMaterialField')
@@ -65,10 +69,6 @@ class RelatedTable extends \samson\cms\table\Table
             ->cond('material.parent_id', $this->parent->id)
             ->cond('material.Active', 1)
             ->cond('material.Draft', 0);
-
-        $this->query->exec($data);
-
-        trace($data, true);
 
         // Constructor treed
         parent::__construct( $this->query );
@@ -91,23 +91,64 @@ class RelatedTable extends \samson\cms\table\Table
             // Depending on field type
             switch ($field->Type)
             {
-                case '4': $input = Field::fromObject($matField, 'Value', 'Select')->optionsFromString($matField->Value); break;
-                case '1': $input = Field::fromObject($matField, 'Value', 'File'); break;
-                case '3': $input = Field::fromObject($matField, 'Value', 'Date'); break;
-                case '7': $input = Field::fromObject($matField, 'numeric_value', 'Field'); break;
-                default : $input = Field::fromObject($matField, 'Value', 'Field');
+                case '4': $input = \samson\cms\input\Field::fromObject($matField, 'Value', 'Select')->optionsFromString($matField->Value); break;
+                case '1': $input = \samson\cms\input\Field::fromObject($matField, 'Value', 'File'); break;
+                case '3': $input = \samson\cms\input\Field::fromObject($matField, 'Value', 'Date'); break;
+                case '7': $input = \samson\cms\input\Field::fromObject($matField, 'numeric_value', 'Field'); break;
+                default : $input = \samson\cms\input\Field::fromObject($matField, 'Value', 'Field');
             }
 
-            $tdHTML .= m()->view('table/row_td')->input($input)->output();
+            $tdHTML .= $this->renderModule->view('table/tdView')->input($input)->output();
         }
 
-
-
         // Render field row
-        return m()
+        return $this->renderModule
             ->view($this->row_tmpl)
+            ->materialName(\samson\cms\input\Field::fromObject($db_row, 'Url', 'Field'))
+            ->materialID($db_row->id)
+            ->parentID($db_row->parent_id)
             ->td_view($tdHTML)
             ->pager($pager)
+            ->output();
+    }
+
+    public function render( array $db_rows = null)
+    {
+        // Rows HTML
+        $rows = '';
+
+        // if no rows data is passed - perform db request
+        if( !isset($db_rows) )	$db_rows = $this->query->exec();
+
+        // If we have table rows data
+        if( is_array($db_rows ) )
+        {
+            // Save quantity of rendering rows
+            $this->last_render_count = sizeof($db_rows);
+
+            // Iterate db data and perform rendering
+            foreach( $db_rows as & $db_row )
+            {
+                $rows .= $this->row( $db_row, $this->pager );
+            }
+        }
+        // No data found after query, external render specified
+        else $rows .= $this->emptyrow($this->query, $this->pager );
+
+        //elapsed('render pages: '.$this->pager->total);
+
+        $thHTML = '';
+
+        foreach ($this->fields as $field) {
+            $thHTML .= $this->renderModule->view('table/thView')->fieldName($field->Name)->output();
+        }
+
+        // Render table view
+        return $this->renderModule
+            ->view($this->table_tmpl)
+            ->thView($thHTML)
+            ->set( $this->pager )
+            ->rows($rows)
             ->output();
     }
 

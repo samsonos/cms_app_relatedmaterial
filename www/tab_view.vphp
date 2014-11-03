@@ -1,0 +1,6 @@
+<a class="related_material_add" href="<?php url_base('related_material/addpopup', 'currentID') ?>">
+    <?php t('Добавить подчиненный') ?>
+</a>
+<div class="related_material_tab">
+    <?php iv('table') ?>
+</div>

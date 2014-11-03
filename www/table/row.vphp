@@ -1,7 +1,9 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: onysko
- * Date: 31.10.2014
- * Time: 16:12
- */ 
+<tr>
+    <td>
+        <?php v('materialName_html') ?>
+    </td>
+    <?php iv('td_view') ?>
+    <td>
+        <a href="<?php url_base('related_material/delete', 'materialID', 'related_material/table', 'parentID') ?>" class="delete_material"> X </a>
+    </td>
+</tr>
