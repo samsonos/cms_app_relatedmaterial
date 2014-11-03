@@ -50,4 +50,22 @@ class RelatedTabLocalized extends FormTab
             }
         }
     }
+
+    public function getContent()
+    {
+        $content = '';
+
+        // Iterate tab group tabs
+        foreach ( $this->tabs as $tab )
+        {
+            // If tab inner html is not empty
+            if( isset($tab->content_html{0}))
+            {
+                // Render top tab content view
+                $content .= m('related_material')->view('content')->tab($tab)->output();
+            }
+        }
+
+        return $content;
+    }
 }

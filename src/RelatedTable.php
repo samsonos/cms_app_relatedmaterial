@@ -60,7 +60,7 @@ class RelatedTable extends \samson\cms\table\Table
                 // Iterate all fields
                 foreach ($structure->fields() as $field) {
                     // Use only localizable fields
-                    if ($field->local == 1 && !isset($this->fields[$field->id])) {
+                    if ($locale != '' && $field->local == 1 && !isset($this->fields[$field->id])) {
                         // Gather key => value fields collection
                         $this->fields[$field->id] = $field;
 
@@ -74,6 +74,22 @@ class RelatedTable extends \samson\cms\table\Table
                                 $mf->FieldID = $field->id;
                                 $mf->Active = 1;
                                 $mf->locale = $this->locale;
+                                $mf->save();
+                            }
+                        }
+                    } else if ($locale == '' && $field->local == 0 && !isset($this->fields[$field->id])) {
+                        // Gather key => value fields collection
+                        $this->fields[$field->id] = $field;
+
+                        // Iterate all child materials
+                        foreach ($materialIDs as $materialID) {
+                            // Check if they already have this material field
+                            if (!dbQuery('materialfield')->MaterialID($materialID)->locale($this->locale)->FieldID($field->id)->first()) {
+                                // Create material field record
+                                $mf = new \samson\activerecord\materialfield(false);
+                                $mf->MaterialID = $materialID;
+                                $mf->FieldID = $field->id;
+                                $mf->Active = 1;
                                 $mf->save();
                             }
                         }

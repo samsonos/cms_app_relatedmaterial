@@ -128,11 +128,16 @@ class App extends \samson\cms\App
 	
 	public function __async_table($parentID)
     {
-        $parent = dbQuery('\samson\cms\CMSMaterial')->id($parentID)->first();
+        $form = new \samson\cms\web\material\Form($parentID);
 
-        $table = new RelatedTable($parent);
+        /** @var RelatedTabLocalized $tab */
+        $tab = new RelatedTabLocalized($form);
 
-        return array('status' => 1, 'table' => $table->render());
+        $content = $tab->getContent();
+
+        trace($content);
+
+        return array('status' => 1, 'table' => $content);
     }
 
 	public function getRelatedTable($material_id, $locale = '')
@@ -142,6 +147,10 @@ class App extends \samson\cms\App
         $table = new RelatedTable($parent, $locale);
 
         //$this->cloneParent($parent);
+
+        if ($locale == '') {
+            $locale = 'all';
+        }
 
         return m('related_material')->view('tab_view')->table($table->render())->currentID($material_id)->output();
 	}

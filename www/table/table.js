@@ -5,23 +5,30 @@
 function initRelatedTable(table) {
     s('.delete_material', table).each(function(link) {
         link.ajaxClick(function(response) {
-            s('.related_material_tab').html(response.table);
-            initRelatedTable(table);
+            s('#related-tab-tab').html(response.table);
+            SamsonCMS_InputField(s('.__inputfield.__textarea'));
+            s('.__inputfield.__textarea').pageInit( SamsonCMS_InputField );
         })
     });
 }
 
-s('.related_material_table').pageInit(function(table) {
-    initRelatedTable(table);
-    s('.related_material_add').tinyboxAjax({
-        html : 'popup',
-        oneClickClose : true,
-        renderedHandler : function(form, tb) {
-            s('.add_related_form', form).ajaxSubmit(function(response) {
-                s('.related_material_tab').html(response.table);
-                initRelatedTable(table);
-                tb._close();
-            });
-        }
+s(document).pageInit(function(table) {
+    s('.related_material_table').each(function(table) {
+        initRelatedTable(table);
+    });
+
+    s('.related_material_add').each(function(link) {
+        link.tinyboxAjax({
+            html : 'popup',
+            oneClickClose : true,
+            renderedHandler : function(form, tb) {
+                s('.add_related_form', form).ajaxSubmit(function(response) {
+                    s('#related-tab-tab').html(response.table);
+                    SamsonCMS_InputField(s('.__inputfield.__textarea'));
+                    initRelatedTable(table);
+                    tb._close();
+                });
+            }
+        });
     });
 });
