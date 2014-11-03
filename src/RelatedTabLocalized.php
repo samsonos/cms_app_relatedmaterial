@@ -9,10 +9,13 @@
 namespace samson\cms\web\relatedmaterial;
 
 use \samson\core\SamsonLocale;
-
+use \samson\cms\web\material\FormTab;
 
 class RelatedTabLocalized extends FormTab
 {
+    /** Meta static variable to disable default form rendering */
+    public static $AUTO_RENDER = true;
+
     /** Tab name for showing in header */
     public $name = 'Подчиненные материалы';
 
@@ -26,7 +29,7 @@ class RelatedTabLocalized extends FormTab
      * Constructor
      * @param Form $form Pointer to form
      */
-    public function __construct(Form & $form, FormTab & $parent = null)
+    public function __construct(\samson\cms\web\material\Form & $form, FormTab & $parent = null)
     {
         // Call parent constructor
         parent::__construct( $form, $parent );
@@ -35,14 +38,15 @@ class RelatedTabLocalized extends FormTab
         $this->tabs[] = new MaterialTab($form, $this, '');
 
         // Iterate available locales if fields exists
-        if( sizeof($form->fields) && sizeof(SamsonLocale::$locales)) foreach (SamsonLocale::$locales as $locale)
-        {
-            // Create child tab
-            $tab = new FieldTab($form, $this, $locale);
+        if (sizeof(SamsonLocale::$locales)) {
+            foreach (SamsonLocale::$locales as $locale) {
+                // Create child tab
+                $tab = new MaterialTab($form, $this, $locale);
 
-            // If it is not empty
-            if($tab->filled()) {
-                $this->tabs[] = $tab;
+                // If it is not empty
+                if ($tab->filled()) {
+                    $this->tabs[] = $tab;
+                }
             }
         }
     }

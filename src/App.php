@@ -21,7 +21,7 @@ class App extends \samson\cms\App
 	{
         // TODO: Change this logic to make tab loading more simple
 		// Create new gallery tab object to load it 
-		class_exists( ns_classname('MaterialTab','samson\cms\web\relatedmaterial') );
+		class_exists( ns_classname('RelatedTabLocalized','samson\cms\web\relatedmaterial') );
 	}
 
     public function __async_addpopup($id) {
@@ -139,7 +139,7 @@ class App extends \samson\cms\App
 	{
         $parent = dbQuery('\samson\cms\CMSMaterial')->id($material_id)->first();
 
-        $table = new RelatedTable($parent);
+        $table = new RelatedTable($parent, $locale);
 
         //$this->cloneParent($parent);
 
