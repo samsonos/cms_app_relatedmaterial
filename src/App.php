@@ -16,6 +16,8 @@ class App extends \samson\cms\App
 	/** Identifier */
 	protected $id = 'related_material';
 
+    protected $form;
+
 	/** @see \samson\core\ExternalModule::init() */
 	public function prepare( array $params = null )
 	{
@@ -36,7 +38,7 @@ class App extends \samson\cms\App
         $material->Name = 'related material';
         $material->Url = $_POST['Url'];
         $material->parent_id = $parent->id;
-        $material->type = 1;
+        $material->type = 2;
         $material->Active = 1;
         $material->Published = 1;
         $material->save();
@@ -135,7 +137,8 @@ class App extends \samson\cms\App
 
         $content = $tab->getContent();
 
-        trace($content);
+        //trace($this->form);
+        //trace($content);
 
         return array('status' => 1, 'table' => $content);
     }

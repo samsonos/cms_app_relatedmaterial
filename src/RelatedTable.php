@@ -151,7 +151,7 @@ class RelatedTable extends \samson\cms\table\Table
             ->output();
     }
 
-    public function render( array $db_rows = null)
+    public function render( array $db_rows = null, $module = null)
     {
         // Rows HTML
         $rows = '';
