@@ -149,12 +149,27 @@ class App extends \samson\cms\App
 
         $table = new RelatedTable($parent, $locale);
 
-        //$this->cloneParent($parent);
+        $all = false;
+        $multilingual = false;
+        if (dbQuery('\samson\cms\CMSNavMaterial')->MaterialID($material_id)->join('structure')->cond('type', 1)->fields('StructureID', $strMats)) {
+            /*foreach ($strMats as $strMat) {
+                $structure = $strMat->onetoone['_structure'];
 
-        if ($locale == '') {
-            $locale = 'all';
+            }*/
+            if (dbQuery('structurefield')->join('field')->cond('field_local', 0)->cond('StructureID', $strMats)->first()) {
+                $all = true;
+            }
+            if (dbQuery('structurefield')->join('field')->cond('field_local', 1)->cond('StructureID', $strMats)->first()) {
+                $multilingual = true;
+            }
         }
 
-        return m('related_material')->view('tab_view')->table($table->render())->currentID($material_id)->output();
+        if ($locale == '' && $all) {
+            return m('related_material')->view('tab_view')->table($table->render())->currentID($material_id)->output();
+        } elseif ($locale != '' && $multilingual) {
+            return m('related_material')->view('tab_view')->table($table->render())->currentID($material_id)->output();
+        }
+
+        return '';
 	}
 }

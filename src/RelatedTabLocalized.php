@@ -34,8 +34,11 @@ class RelatedTabLocalized extends FormTab
         // Call parent constructor
         parent::__construct( $form, $parent );
 
+        $allTab = new MaterialTab($form, $this, '');
         // Add generic tab
-        $this->tabs[] = new MaterialTab($form, $this, '');
+        if ($allTab->filled()) {
+            $this->tabs[] = $allTab;
+        }
 
         // Iterate available locales if fields exists
         if (sizeof(SamsonLocale::$locales)) {

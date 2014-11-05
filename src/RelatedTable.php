@@ -182,13 +182,18 @@ class RelatedTable extends \samson\cms\table\Table
             $thHTML .= $this->renderModule->view('table/thView')->fieldName($field->Name)->output();
         }
 
-        // Render table view
-        return $this->renderModule
-            ->view($this->table_tmpl)
-            ->thView($thHTML)
-            ->set( $this->pager )
-            ->rows($rows)
-            ->output();
+        if ($rows != '') {
+            // Render table view
+            return $this->renderModule
+                ->view($this->table_tmpl)
+                ->thView($thHTML)
+                ->set( $this->pager )
+                ->rows($rows)
+                ->output();
+        } else {
+            return '';
+        }
+
     }
 
 } 
