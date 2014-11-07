@@ -51,11 +51,11 @@ class RelatedTable extends \samson\cms\table\Table
             ->cond('material.Active', 1)
             ->cond('material.Draft', 0)
             ->fieldsNew('MaterialID');
-
+        
         // Iterate all parent material structures
         foreach ($parent->cmsnavs() as $structure) {
             // Use only special structures
-            if ($structure->type == 1) {
+            if (isset($structure->type) && $structure->type == 1) {
                 //$this->structures[$structure->id] = $structure;
                 // Iterate all fields
                 foreach ($structure->fields() as $field) {
