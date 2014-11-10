@@ -26,10 +26,18 @@ class App extends \samson\cms\App
 		class_exists( ns_classname('RelatedTabLocalized','samson\cms\web\relatedmaterial') );
 	}
 
+    /**
+     * @param $id int material parent id
+     * @return array AJAX response
+     */
     public function __async_addpopup($id) {
         return array('status' => 1, 'popup' => m('related_material')->view('popup/add_popup')->parentID($id)->output());
     }
 
+    /**
+     * Creating new related material
+     * @return array AJAX response
+     */
     public function __async_add() {
         $parent = dbQuery('samson\cms\CMSMaterial')
                     ->id($_POST['parent_id'])
@@ -43,29 +51,38 @@ class App extends \samson\cms\App
         $material->Published = 1;
         $material->save();
 
+        // Clone parent relations for new material
         $this->cloneParent($parent, $material);
 
         return array('status' => 1);
     }
 
+    /**
+     * Cloning relations
+     * @param $parent \samson\cms\CMSMaterial
+     * @param null $child \samson\activerecord\material
+     */
     public function cloneParent($parent, $child = null)
     {
         $fields_array_temp = array();
         $fields_array = array();
         foreach ($parent->cmsnavs() as $structure) {
+            //Get all related fields
             if ($structure->type == 1) {
                 $fields_array_temp = array_merge($fields_array_temp, $structure->fields());
             }
         }
 
+        // Create comfy array performance
         foreach ($fields_array_temp as $field) {
             $fields_array[$field->id] = $field;
         }
 
         unset($fields_array_temp);
+        // Get identifiers of founded fields
         $field_keys = array_keys($fields_array);
 
-
+        // Get parent record with all relations that we need
         $parent = dbQuery ('samson\cms\CMSMaterial')
             ->id($parent->id)
             ->join('samson\cms\CMSMaterialField')
@@ -74,6 +91,7 @@ class App extends \samson\cms\App
             ->first();
 
 
+        // Create structurematerial relations
         foreach ($parent->onetomany['_structurematerial'] as $cmsnav) {
             $structurematerial = new \samson\activerecord\structurematerial(false);
             $structurematerial->MaterialID = $child->id;
@@ -82,6 +100,7 @@ class App extends \samson\cms\App
             $structurematerial->save();
         }
 
+        // Create materialfield relaions
         foreach ($parent->onetomany['_materialfield'] as $matfield) {
             $materialfield = new \samson\activerecord\materialfield(false);
             $materialfield->MaterialID = $child->id;
@@ -97,6 +116,7 @@ class App extends \samson\cms\App
             $materialfield->save();
         }
 
+        // Create gallery
         foreach ($parent->onetomany['_gallery'] as $cmsgallery) {
             $gallery = new \samson\activerecord\gallery(false);
             $gallery->MaterialID = $child->id;
@@ -107,8 +127,6 @@ class App extends \samson\cms\App
             $gallery->Active = $cmsgallery->Active;
             $gallery->save();
         }
-
-        //trace($materialfields);
     }
 	/**
 	 * Controller for deleting material image from gallery 
@@ -127,7 +145,12 @@ class App extends \samson\cms\App
 		
 		return $result;
 	}
-	
+
+    /**
+     * Async updating related table
+     * @param $parentID
+     * @return array
+     */
 	public function __async_table($parentID)
     {
         $form = new \samson\cms\web\material\Form($parentID);
@@ -136,9 +159,6 @@ class App extends \samson\cms\App
         $tab = new RelatedTabLocalized($form);
 
         $content = $tab->getContent();
-
-        //trace($this->form);
-        //trace($content);
 
         return array('status' => 1, 'table' => $content);
     }
@@ -151,11 +171,9 @@ class App extends \samson\cms\App
 
         $all = false;
         $multilingual = false;
-        if (dbQuery('\samson\cms\CMSNavMaterial')->MaterialID($material_id)->join('structure')->cond('type', 1)->fields('StructureID', $strMats)) {
-            /*foreach ($strMats as $strMat) {
-                $structure = $strMat->onetoone['_structure'];
 
-            }*/
+        if (dbQuery('\samson\cms\CMSNavMaterial')->MaterialID($material_id)->join('structure')->cond('type', 1)->fields('StructureID', $strMats)) {
+            // Check with locales we have in fields table
             if (dbQuery('structurefield')->join('field')->cond('field_local', 0)->cond('StructureID', $strMats)->first()) {
                 $all = true;
             }

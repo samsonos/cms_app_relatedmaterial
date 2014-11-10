@@ -34,21 +34,26 @@ class RelatedTabLocalized extends FormTab
         // Call parent constructor
         parent::__construct( $form, $parent );
 
-        $allTab = new MaterialTab($form, $this, '');
-        // Add generic tab
-        if ($allTab->filled()) {
-            $this->tabs[] = $allTab;
-        }
+        // If material type is related than show this tab
+        if ($form->material->type == 1) {
+            // Create all locale sub tab
+            $allTab = new MaterialTab($form, $this, '');
 
-        // Iterate available locales if fields exists
-        if (sizeof(SamsonLocale::$locales)) {
-            foreach (SamsonLocale::$locales as $locale) {
-                // Create child tab
-                $tab = new MaterialTab($form, $this, $locale);
+            // Add this sub tab to tabs if it is not empty
+            if ($allTab->filled()) {
+                $this->tabs[] = $allTab;
+            }
 
-                // If it is not empty
-                if ($tab->filled()) {
-                    $this->tabs[] = $tab;
+            // Iterate available locales if fields exists
+            if (sizeof(SamsonLocale::$locales)) {
+                foreach (SamsonLocale::$locales as $locale) {
+                    // Create child tab
+                    $tab = new MaterialTab($form, $this, $locale);
+
+                    // If it is not empty
+                    if ($tab->filled()) {
+                        $this->tabs[] = $tab;
+                    }
                 }
             }
         }
@@ -59,11 +64,9 @@ class RelatedTabLocalized extends FormTab
         $content = '';
 
         // Iterate tab group tabs
-        foreach ( $this->tabs as $tab )
-        {
+        foreach ($this->tabs as $tab) {
             // If tab inner html is not empty
-            if( isset($tab->content_html{0}))
-            {
+            if (isset($tab->content_html{0})) {
                 // Render top tab content view
                 $content .= m('related_material')->view('content')->tab($tab)->output();
             }
