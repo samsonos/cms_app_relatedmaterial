@@ -39,10 +39,7 @@ class RelatedTabLocalized extends FormTab
             // Create all locale sub tab
             $allTab = new MaterialTab($form, $this, '');
 
-            // Add this sub tab to tabs if it is not empty
-            if ($allTab->filled()) {
-                $this->tabs[] = $allTab;
-            }
+            $this->tabs[] = $allTab;
 
             // Iterate available locales if fields exists
             if (sizeof(SamsonLocale::$locales)) {
