@@ -82,7 +82,7 @@ class App extends \samson\cms\App
         // Get identifiers of founded fields
         $field_keys = array_keys($fields_array);
 
-        $parent->__cloneMaterial($child, $field_keys);
+        $parent->copy($child, $field_keys);
     }
 	/**
 	 * Controller for deleting material image from gallery 
