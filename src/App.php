@@ -82,51 +82,8 @@ class App extends \samson\cms\App
         // Get identifiers of founded fields
         $field_keys = array_keys($fields_array);
 
-        // Get parent record with all relations that we need
-        $parent = dbQuery ('samson\cms\CMSMaterial')
-            ->id($parent->id)
-            ->join('samson\cms\CMSMaterialField')
-            ->join('samson\cms\CMSGallery')
-            ->join('samson\cms\CMSNavMaterial')
-            ->first();
+        $parent->__cloneMaterial($child, '', 2, $field_keys);
 
-
-        // Create structurematerial relations
-        foreach ($parent->onetomany['_structurematerial'] as $cmsnav) {
-            $structurematerial = new \samson\activerecord\structurematerial(false);
-            $structurematerial->MaterialID = $child->id;
-            $structurematerial->StructureID = $cmsnav->StructureID;
-            $structurematerial->Active = 1;
-            $structurematerial->save();
-        }
-
-        // Create materialfield relaions
-        foreach ($parent->onetomany['_materialfield'] as $matfield) {
-            $materialfield = new \samson\activerecord\materialfield(false);
-            $materialfield->MaterialID = $child->id;
-            $materialfield->FieldID = $matfield->FieldID;
-            if (in_array($materialfield->FieldID, $field_keys)) {
-                $materialfield->Value = '';
-            } else {
-                $materialfield->Value = $matfield->Value;
-            }
-            $materialfield->numeric_value = $matfield->numeric_value;
-            $materialfield->locale = $matfield->locale;
-            $materialfield->Active = $matfield->Active;
-            $materialfield->save();
-        }
-
-        // Create gallery
-        foreach ($parent->onetomany['_gallery'] as $cmsgallery) {
-            $gallery = new \samson\activerecord\gallery(false);
-            $gallery->MaterialID = $child->id;
-            $gallery->Path = $cmsgallery->Path;
-            $gallery->Src = $cmsgallery->Src;
-            $gallery->Name = $cmsgallery->Name;
-            $gallery->Description = $cmsgallery->Description;
-            $gallery->Active = $cmsgallery->Active;
-            $gallery->save();
-        }
     }
 	/**
 	 * Controller for deleting material image from gallery 

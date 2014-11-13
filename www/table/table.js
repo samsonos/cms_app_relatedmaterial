@@ -2,6 +2,7 @@
  * Created by onysko on 03.11.2014.
  */
 
+var RelatedMaterialLoader = new Loader(s('#related-tab'));
 function initRelatedTable(table) {
     s('.delete_material', table).each(function(link) {
         link.ajaxClick(function(response) {
@@ -12,6 +13,10 @@ function initRelatedTable(table) {
             });
             SamsonCMS_InputField(s('.__inputfield.__textarea'));
             initAddButton();
+            RelatedMaterialLoader.hide();
+        }, function() {
+            RelatedMaterialLoader.show('', true);
+            return true;
         })
     });
 }
@@ -41,6 +46,14 @@ function initAddButton()
                     initAddButton();
                     tb._close();
                 });
+            },
+            beforeHandler : function() {
+                RelatedMaterialLoader.show('', true);
+                return true;
+            },
+            responseHandler : function() {
+                RelatedMaterialLoader.hide();
+                return true;
             }
         });
     });
