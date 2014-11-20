@@ -136,6 +136,7 @@ class RelatedTable extends \samson\cms\table\Table
                     }
 
                     $tdHTML .= $this->renderModule->view('table/tdView')->input($input)->output();
+                    break;
                 }
             }
         }
