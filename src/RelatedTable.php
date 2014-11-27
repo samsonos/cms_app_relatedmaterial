@@ -140,6 +140,8 @@ class RelatedTable extends \samson\cms\table\Table
                 }
             }
         }
+        $input = \samson\cms\input\Field::fromObject($material, 'remains', 'Field');
+        $tdHTML .= $this->renderModule->view('table/tdView')->input($input)->output();
 
         // Render field row
         return $this->renderModule
@@ -182,6 +184,7 @@ class RelatedTable extends \samson\cms\table\Table
         foreach ($this->fields as $field) {
             $thHTML .= $this->renderModule->view('table/thView')->fieldName($field->Name)->output();
         }
+        $thHTML .= $this->renderModule->view('table/thView')->fieldName('Остаток')->output();
 
         if ($rows != '') {
             // Render table view

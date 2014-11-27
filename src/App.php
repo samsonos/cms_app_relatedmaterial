@@ -39,7 +39,7 @@ class App extends \samson\cms\App
      * @return array AJAX response
      */
     public function __async_add() {
-        $parent = dbQuery('samson\cms\CMSMaterial')
+        $parent = dbQuery('\samson\cms\CMSMaterial')
                     ->id($_POST['parent_id'])
                     ->first();
         $material = new \samson\activerecord\material(false);
