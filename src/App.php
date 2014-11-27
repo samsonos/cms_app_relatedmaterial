@@ -42,28 +42,7 @@ class App extends \samson\cms\App
         $parent = dbQuery('\samson\cms\CMSMaterial')
                     ->id($_POST['parent_id'])
                     ->first();
-        $material = new \samson\activerecord\material(false);
-        $material->Name = 'related material';
-        $material->Url = $_POST['Url'];
-        $material->parent_id = $parent->id;
-        $material->type = 2;
-        $material->Active = 1;
-        $material->Published = 1;
-        $material->save();
 
-        // Clone parent relations for new material
-        $this->cloneParent($parent, $material);
-
-        return array('status' => 1);
-    }
-
-    /**
-     * Cloning relations
-     * @param $parent \samson\cms\CMSMaterial
-     * @param null $child \samson\activerecord\material
-     */
-    public function cloneParent($parent, $child = null)
-    {
         $fields_array_temp = array();
         $fields_array = array();
         foreach ($parent->cmsnavs() as $structure) {
@@ -82,8 +61,20 @@ class App extends \samson\cms\App
         // Get identifiers of founded fields
         $field_keys = array_keys($fields_array);
 
+        $child = null;
+
         $parent->copy($child, $field_keys);
+
+        $child->Name = 'related material';
+        $child->Url = $_POST['Url'];
+        $child->parent_id = $parent->id;
+        $child->type = 2;
+        $child->remains = 0;
+        $child->save();
+
+        return array('status' => 1);
     }
+
 	/**
 	 * Controller for deleting material image from gallery 
 	 * @param string $id Gallery Image identifier

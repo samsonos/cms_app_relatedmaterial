@@ -37,6 +37,7 @@ function initAddButton()
             oneClickClose : true,
             renderedHandler : function(form, tb) {
                 s('.add_related_form', form).ajaxSubmit(function(response) {
+                    RelatedMaterialLoader.hide();
                     s('#related-tab-tab').html(response.table);
                     s('#material-tabs').tabs();
                     s('.related_material_table', response.table).each(function(table) {
@@ -44,7 +45,10 @@ function initAddButton()
                     });
                     SamsonCMS_InputField(s('.__inputfield.__textarea'));
                     initAddButton();
+                }, function() {
+                    RelatedMaterialLoader.show('', true);
                     tb._close();
+                    return true;
                 });
             },
             beforeHandler : function() {
