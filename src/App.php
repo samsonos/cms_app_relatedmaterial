@@ -86,6 +86,10 @@ class App extends \samson\cms\App
 		$result = array( 'status' => false );
 
 		if( dbQuery('material')->id($id)->first($material)) {
+            if (dbQuery('material')->id($material->parent_id)->first($parent)) {
+                $parent->remains = $parent->remains - $material->remains;
+                $parent->save();
+            }
             $material->delete();
 			$result['status'] = true;
 		}
