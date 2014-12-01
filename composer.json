@@ -4,7 +4,8 @@
     "author":"Pavlo Onysko <onysko@samsonos.com>",
     "require":{
         "samsonos/cms_app":"*",
-        "samsonos/cms_table":"*"
+        "samsonos/cms_table":"*",
+        "samsonos/cms_app_material":"*"
     },
     "license":"Open Software License (OSL) v 3.0",
     "homepage":"http://samsonos.com/",
