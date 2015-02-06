@@ -111,7 +111,7 @@ class RelatedTable extends \samson\cms\table\Table
     }
 
 
-    public function row(& $material, Pager & $pager = null )
+    public function row(& $material, Pager & $pager = null, $module = null)
     {
         $tdHTML = '';
         foreach ($this->fields as $field) {
