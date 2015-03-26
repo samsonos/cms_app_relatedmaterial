@@ -1,5 +1,6 @@
 <?php
 namespace samson\cms\web\relatedmaterial;
+use samsonphp\event\Event;
 
 /**
  * SamsonCMS application for interacting with material gallery
@@ -17,6 +18,12 @@ class App extends \samson\cms\App
 	protected $id = 'related_material';
 
     protected $form;
+
+    public function init(array $params = array())
+    {
+        Event::subscribe('samson.cms.input.change', array($this, 'saveFieldHandler'));
+        return parent::init($params);
+    }
 
 	/** @see \samson\core\ExternalModule::init() */
 	public function prepare( array $params = null )
@@ -141,4 +148,56 @@ class App extends \samson\cms\App
 
         return '';
 	}
+
+    /**
+     * External handler called on samson.cms.input.change event
+     *
+     * @param \samson\activerecord\dbRecord $dbObject Database entity instance
+     * @param string $param Entity field
+     * @param mixed $value Entity previous value
+     */
+    public function saveFieldHandler($dbObject, $param, $value)
+    {
+        var_dump($this);
+        // If our object is material field
+        if ($dbObject instanceof \samson\activerecord\materialfield) {
+            // Get current material
+            $material = dbQuery('material')->id($dbObject->MaterialID)->first();
+            // If material can have related materials
+            if ($material->type == 1 && $material->parent_id == 0) {
+                // Get related materials identifiers
+                $children = dbQuery('material')->cond('parent_id', $material->id)->fields('MaterialID');
+
+                // For each child create or update material field record
+                foreach ($children as $child) {
+                    if (
+                    !dbQuery('materialfield')
+                        ->cond('FieldID', $dbObject->FieldID)
+                        ->cond('locale', $dbObject->locale)
+                        ->cond('MaterialID', $child)
+                        ->first($childMaterialField)
+                    ) {
+                        $childMaterialField = new \samson\activerecord\materialfield(false);
+                        $childMaterialField->MaterialID = $child;
+                        $childMaterialField->FieldID = $dbObject->FieldID;
+                        $childMaterialField->locale = $dbObject->locale;
+                        $childMaterialField->Active = 1;
+                    }
+                    $childMaterialField->Value = $dbObject->Value;
+                    if (isset($dbObject->numeric_value)) {
+                        $childMaterialField->numeric_value = $dbObject->numeric_value;
+                    }
+                    $childMaterialField->save();
+                }
+            }
+        }
+        if ($dbObject instanceof \samson\activerecord\material && $param == 'remains') {
+            /** @var \samson\activerecord\material $parent */
+            $parent = null;
+            if (dbQuery('material')->cond('MaterialID', $dbObject->parent_id)->first($parent)) {
+                $parent->remains = (int)$parent->remains - (int)$value + (int)$dbObject->remains;
+                $parent->save();
+            }
+        }
+    }
 }

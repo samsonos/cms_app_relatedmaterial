@@ -9,6 +9,7 @@
 namespace samson\cms\web\relatedmaterial;
 
 use samson\pager\Pager;
+use samsoncms\input\Field;
 
 class RelatedTable extends \samson\cms\table\Table
 {
@@ -118,35 +119,36 @@ class RelatedTable extends \samson\cms\table\Table
             foreach ($material->onetomany['_materialfield'] as $mf) {
                 if ($mf->FieldID == $field->FieldID && $mf->locale == $this->locale) {
                     // Depending on field type
-                    switch ($field->Type) {
-                        case '4':
-                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'Select')->optionsFromString($mf->Value);
-                            break;
-                        case '1':
-                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'File');
-                            break;
-                        case '3':
-                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'Date');
-                            break;
-                        case '7':
-                            $input = \samson\cms\input\Field::fromObject($mf, 'numeric_value', 'Field');
-                            break;
-                        default :
-                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'Field');
-                    }
+//                    switch ($field->Type) {
+//                        case '4':
+//                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'Select')->optionsFromString($mf->Value);
+//                            break;
+//                        case '1':
+//                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'File');
+//                            break;
+//                        case '3':
+//                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'Date');
+//                            break;
+//                        case '7':
+//                            $input = \samson\cms\input\Field::fromObject($mf, 'numeric_value', 'Field');
+//                            break;
+//                        default :
+//                            $input = \samson\cms\input\Field::fromObject($mf, 'Value', 'Field');
+//                    }
+                    $input = Field::create($mf, $field->Type);
 
                     $tdHTML .= $this->renderModule->view('table/tdView')->input($input)->output();
                     break;
                 }
             }
         }
-        $input = \samson\cms\input\Field::fromObject($material, 'remains', 'Field');
+        $input = Field::create($material, 7, 'remains');
         $tdHTML .= $this->renderModule->view('table/tdView')->input($input)->output();
 
         // Render field row
         return $this->renderModule
             ->view($this->row_tmpl)
-            ->materialName(\samson\cms\input\Field::fromObject($material, 'Url', 'Field'))
+            ->materialName(Field::create($material, 0, 'Url'))
             ->materialID($material->id)
             ->parentID($material->parent_id)
             ->td_view($tdHTML)
