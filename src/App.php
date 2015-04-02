@@ -158,7 +158,6 @@ class App extends \samson\cms\App
      */
     public function saveFieldHandler($dbObject, $param, $value)
     {
-        var_dump($this);
         // If our object is material field
         if ($dbObject instanceof \samson\activerecord\materialfield) {
             // Get current material
