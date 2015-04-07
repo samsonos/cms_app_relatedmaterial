@@ -8,8 +8,9 @@
 
 namespace samson\cms\web\relatedmaterial;
 
-use \samson\core\SamsonLocale;
-use \samson\cms\web\material\FormTab;
+use samson\core\SamsonLocale;
+use samsoncms\app\material\FormTab;
+use samsoncms\app\material\Form;
 
 class RelatedTabLocalized extends FormTab
 {
@@ -29,7 +30,7 @@ class RelatedTabLocalized extends FormTab
      * Constructor
      * @param Form $form Pointer to form
      */
-    public function __construct(\samson\cms\web\material\Form & $form, FormTab & $parent = null)
+    public function __construct(Form & $form, FormTab & $parent = null)
     {
         // Call parent constructor
         parent::__construct( $form, $parent );

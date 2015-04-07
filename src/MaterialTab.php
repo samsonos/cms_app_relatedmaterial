@@ -1,7 +1,8 @@
 <?php
 namespace samson\cms\web\relatedmaterial;
 
-use samson\cms\web\material\FormTab;
+use samsoncms\app\material\FormTab;
+use samsoncms\app\material\Form;
 
 /**
  * Gallery Tab for CMSMaterial form 
@@ -33,7 +34,7 @@ class MaterialTab extends FormTab
      * Constructor
      * @param Form $form Pointer to form
      */
-    public function __construct( \samson\cms\web\material\Form & $form, FormTab & $parent = null, $locale = null )
+    public function __construct(Form & $form, FormTab & $parent = null, $locale = null)
     {
         // Call parent constructor
         parent::__construct( $form, $parent );
