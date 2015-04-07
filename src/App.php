@@ -1,5 +1,7 @@
 <?php
 namespace samson\cms\web\relatedmaterial;
+
+use samsoncms\app\material\Form;
 use samsonphp\event\Event;
 
 /**
@@ -111,7 +113,7 @@ class App extends \samson\cms\App
      */
 	public function __async_table($parentID)
     {
-        $form = new \samson\cms\web\material\Form($parentID);
+        $form = new Form($parentID);
 
         /** @var RelatedTabLocalized $tab */
         $tab = new RelatedTabLocalized($form);
