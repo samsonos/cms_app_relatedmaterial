@@ -5,7 +5,7 @@
     "require":{
         "samsonos/cms_app":"*",
         "samsonos/cms_table":"*",
-        "samsonos/cms_app_material":"*"
+        "samsoncms/material":"*"
     },
     "license":"Open Software License (OSL) v 3.0",
     "homepage":"http://samsonos.com/",
