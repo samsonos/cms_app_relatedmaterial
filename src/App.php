@@ -8,7 +8,7 @@ use samsonphp\event\Event;
  * SamsonCMS application for interacting with material gallery
  * @author egorov@samsonos.com
  */
-class App extends \samson\cms\App
+class App extends \samsoncms\Application
 {
 	/** Application name */
 	public $name = 'Подчиненные материалы';
