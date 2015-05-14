@@ -54,7 +54,7 @@ class RelatedTable extends \samson\cms\table\Table
             ->cond('material.parent_id', $this->parent->id)
             ->cond('material.Active', 1)
             ->cond('material.Draft', 0)
-            ->fieldsNew('MaterialID');
+            ->fields('MaterialID');
         
         // Iterate all parent material structures
         foreach ($parent->cmsnavs() as $structure) {
