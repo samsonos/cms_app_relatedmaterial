@@ -123,7 +123,8 @@ class RelatedTable extends \samson\cms\table\Table
             foreach ($material->onetomany['_materialfield'] as $mf) {
                 if ($mf->FieldID == $field->FieldID && $mf->locale == $this->locale) {
                     // Create fields
-                    if ($field->Type < 8) {
+                    //TODO #update 1
+                    if ($field->Type < 9) {
                         $input = m('samsoncms_input_application')
                             ->createFieldByType($this->dbQuery, $field->Type, $mf);
                     }
