@@ -179,17 +179,17 @@ class RelatedTable extends \samson\cms\table\Table
         $thHTML = '';
 
         foreach ($this->fields as $field) {
-            $thHTML .= $this->renderModule->view('table/thView')->fieldName($field->Name)->output();
+            $thHTML .= $this->renderModule->view('table/thView')->set($field->Name, 'fieldName')->output();
         }
-        $thHTML .= $this->renderModule->view('table/thView')->fieldName('Остаток')->output();
+        $thHTML .= $this->renderModule->view('table/thView')->set('Остаток', 'fieldName')->output();
 
         if ($rows != '') {
             // Render table view
             return $this->renderModule
                 ->view($this->table_tmpl)
-                ->thView($thHTML)
-                ->set( $this->pager )
-                ->rows($rows)
+                ->set($thHTML, 'thView')
+                ->set($this->pager)
+                ->set($rows, 'rows')
                 ->output();
         } else {
             return '';
